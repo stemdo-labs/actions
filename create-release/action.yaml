@@ -1,0 +1,21 @@
+name: 'Create Release Branch'
+description: 'Creates a new release branch in the repository.'
+inputs:
+  release_version:
+    description: 'Release version (e.g., 1.0.0)'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create release branch
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        RELEASE_VERSION=${{ inputs.release_version }}
+        BRANCH_NAME="release-${RELEASE_VERSION}"
+        git checkout -b $BRANCH_NAME
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
