@@ -78,7 +78,7 @@ runs:
         sudo apt -y install sshpass
         ssh-keyscan -H ${{ inputs.linuxIP }} >> ~/.ssh/known_hosts
         sshpass -p "${{ inputs.linuxUserPass }}" ssh-copy-id -i ~/.ssh/shrsshkey.pub ${{ inputs.linuxUser }}@${{ inputs.linuxIP }}
-        ssh ${{ inputs.linuxUser }}@${{ inputs.linuxIP }}
+        ssh -i ~/.ssh/shrsshkey  ${{ inputs.linuxUser }}@${{ inputs.linuxIP }}
       shell: bash
     - name: Download self-hosted runner
       run: | 
