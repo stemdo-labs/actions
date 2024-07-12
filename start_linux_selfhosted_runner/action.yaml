@@ -14,7 +14,7 @@ inputs:
     type: string
     description: IP of the virtual machine
   unattended:  
-    required: true
+    required: false
     type: string
     description: Disable interactive prompts for missing arguments. Defaults will be used for missing options
   url:  
