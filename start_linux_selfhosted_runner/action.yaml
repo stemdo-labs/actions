@@ -71,6 +71,9 @@ runs:
     - name: Configure the SSH connection
       run: | 
         ssh-keygen -t rsa -N "" -f ~/.ssh/shrsshkey
+        ls -l ~/.ssh/shrsshkey*
+        chmod 600 ~/.ssh/shrsshkey
+        chmod 644 ~/.ssh/shrsshkey.pub
         sudo apt update
         sudo apt -y install sshpass
         ssh-keyscan -H ${{ inputs.linuxIP }} >> ~/.ssh/known_hosts
