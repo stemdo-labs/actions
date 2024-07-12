@@ -88,18 +88,18 @@ runs:
       run: | 
         cd actions-runner
         ./config.sh \
-          $(if [ "${{ inputs.unattended }}" = "true" ]; then echo "--unattended"; fi) \
+          $(if [ "${{ inputs.unattended }}" = "yes" ]; then echo "--unattended"; fi) \
           --url "${{ inputs.url }}" \
           --token "${{ inputs.token }}" \
           $(if [ ! -z "${{ inputs.name }}" ]; then echo "--name ${{ inputs.name }}"; fi) \
           --runnergroup $(if [ ! -z "${{ inputs.runnergroup }}" ]; then echo "${{ inputs.runnergroup }}"; else echo "default"; fi) \
           --labels $(if [ ! -z "${{ inputs.labels }}" ]; then echo "${{ inputs.labels }}"; else echo "actions"; fi) \
-          $(if [ ! -z "${{ inputs.noDefaultLabels }}" ]; then echo "--no-default-labels"; fi) \
-          $(if [ ! -z "${{ inputs.local }}" ]; then echo "--local"; fi) \
+          $(if [ "${{ inputs.noDefaultLabels }}" = "yes" ]; then echo "--no-default-labels"; fi) \
+          $(if [ "${{ inputs.local }}" = "yes" ]; then echo "--local"; fi) \
           $(if [ ! -z "${{ inputs.work }}" ]; then echo "--work ${{ inputs.work }}"; fi) \
-          $(if [ ! -z "${{ inputs.replace }}" ]; then echo "--replace"; fi) \
+          $(if [ "${{ inputs.replace }}" = "yes" ]; then echo "--replace"; fi) \
           $(if [ ! -z "${{ inputs.pat }}" ]; then echo "--pat ${{ inputs.pat }}"; fi) \
-          $(if [ ! -z "${{ inputs.disableupdate }}" ]; then echo "--disableupdate"; fi) \
-          $(if [ ! -z "${{ inputs.ephemeral }}" ]; then echo "--ephemeral"; fi)
+          $(if [ "${{ inputs.disableupdate }}" = "yes" ]; then echo "--disableupdate"; fi) \
+          $(if [ "${{ inputs.ephemeral }}" = "yes" ]; then echo "--ephemeral"; fi)
         ./run.sh
       shell: bash
