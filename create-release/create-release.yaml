@@ -1,0 +1,28 @@
+name: Create Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        default: ''
+
+jobs:
+  create-branch:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_VERSION=${{ github.event.inputs.release_version }}
+          BRANCH_NAME="release-${RELEASE_VERSION}"
+          git checkout -b $BRANCH_NAME
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
