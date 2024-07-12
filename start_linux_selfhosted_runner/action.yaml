@@ -70,7 +70,7 @@ runs:
   steps:  
     - name: Configure the SSH connection
       run: | 
-        ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+        ssh-keygen -t rsa -N "" -f ~/.ssh/shrsshkey
         sudo apt update
         sudo apt -y install sshpass
         ssh-keyscan -H ${{ inputs.linuxIP }} >> ~/.ssh/known_hosts
