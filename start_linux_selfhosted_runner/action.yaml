@@ -105,5 +105,8 @@ runs:
           $(if [ "${{ inputs.disableupdate }}" = "yes" ]; then echo "--disableupdate"; fi) \
           $(if [ "${{ inputs.ephemeral }}" = "yes" ]; then echo "--ephemeral"; fi)
         # ./run.sh
-        nohup ./run.sh &      
+        # nohup ./run.sh &
+        sudo ./svc.sh install
+        sudo ./svc.sh start
+        sudo ./svc.sh status
       shell: bash
