@@ -105,5 +105,5 @@ runs:
           $(if [ "${{ inputs.disableupdate }}" = "yes" ]; then echo "--disableupdate"; fi) \
           $(if [ "${{ inputs.ephemeral }}" = "yes" ]; then echo "--ephemeral"; fi)
         # ./run.sh
-        nohup ./run.sh & ;kill $!
+        nohup ./run.sh &; kill $!
       shell: bash
