@@ -106,5 +106,10 @@ runs:
           $(if [ "${{ inputs.ephemeral }}" = "yes" ]; then echo "--ephemeral"; fi)
         # ./run.sh
         nohup ./run.sh &
-        kill $!
+        # kill $!
+        PID=$!
+        # Wait for 2 seconds
+        sleep 3
+        # Kill it
+        kill $PID        
       shell: bash
