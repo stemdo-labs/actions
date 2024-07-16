@@ -114,5 +114,5 @@ runs:
         sudo ./svc.sh start
         sudo ./svc.sh status
         exit
-        sleep 3600
+        sleep 5000000000000000
       shell: bash
