@@ -1,11 +1,11 @@
 name: 'Build and Push Docker Image'
-description: 'Builds a Docker image and pushes it to a Docker registry'
+description: 'Build and push a Docker image to a registry'
 inputs:
   registry_url:
+    description: 'Docker registry URL'
     required: true
-    description: 'Docker registry URL to push the image to'
   repository:
-    description: 'Docker repository (image name) to push the image to'
+    description: 'Docker repository (image name)'
     required: true
   tag:
     description: 'Docker image tag'
@@ -17,10 +17,9 @@ inputs:
     description: 'Docker registry password'
     required: true
   context:
-    description: 'Build context for Docker image'
-    required: false
-    default: '.'
-  
+    description: 'Build context (path to Dockerfile)'
+    required: true
+
 runs:
   using: 'composite'
   steps:
