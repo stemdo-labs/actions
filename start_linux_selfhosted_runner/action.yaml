@@ -91,7 +91,8 @@ runs:
       shell: bash
     - name: Configure self-hosted runner
       run: | 
-        cd actions-runner
+        cd /
+        cd tmp/actions-runner
         ./config.sh \
           $(if [ "${{ inputs.unattended }}" = "yes" ]; then echo "--unattended"; fi) \
           --url "${{ inputs.url }}" \
