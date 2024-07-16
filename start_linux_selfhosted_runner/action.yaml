@@ -82,8 +82,8 @@ runs:
       shell: bash
     - name: Download self-hosted runner
       run: | 
-        cd /
-        cd tmp
+        # cd /
+        # cd tmp
         mkdir actions-runner; cd actions-runner
         curl -o actions-runner-linux-x64-2.317.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.317.0/actions-runner-linux-x64-2.317.0.tar.gz
         echo "9e883d210df8c6028aff475475a457d380353f9d01877d51cc01a17b2a91161d  actions-runner-linux-x64-2.317.0.tar.gz" | shasum -a 256 -c
@@ -91,8 +91,9 @@ runs:
       shell: bash
     - name: Configure self-hosted runner
       run: | 
-        cd /
-        cd tmp/actions-runner
+        # cd /
+        # cd tmp
+        cd actions-runner
         ./config.sh \
           $(if [ "${{ inputs.unattended }}" = "yes" ]; then echo "--unattended"; fi) \
           --url "${{ inputs.url }}" \
@@ -113,5 +114,5 @@ runs:
         sudo ./svc.sh start
         sudo ./svc.sh status
         # exit
-        # sleep 500
+        # sleep 500000
       shell: bash
