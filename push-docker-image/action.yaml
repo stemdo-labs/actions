@@ -1,0 +1,33 @@
+name: 'Build and Push Docker Image'
+description: 'Builds a Docker image and pushes it to a Docker registry'
+inputs:
+  registry_url:
+    required: true
+    description: 'Docker registry URL to push the image to'
+  repository:
+    description: 'Docker repository (image name) to push the image to'
+    required: true
+  tag:
+    description: 'Docker image tag'
+    required: true
+  username:
+    description: 'Docker registry username'
+    required: true
+  password:
+    description: 'Docker registry password'
+    required: true
+  
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build and Push Docker Image
+      run: |
+        echo "Building Docker image ${{ inputs.repository }}:${{ inputs.tag }}"
+        docker build -t ${{ inputs.repository }}:${{ inputs.tag }} .
+        docker tag ${{ inputs.repository }}:${{ inputs.tag }} ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
+        echo "${{ inputs.password }}" | docker login ${{ inputs.registry_url }} -u ${{ inputs.username }} --password-stdin
+        docker push ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
+      shell: bash
