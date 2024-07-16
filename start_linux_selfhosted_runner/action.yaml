@@ -113,6 +113,6 @@ runs:
         sudo ./svc.sh install
         sudo ./svc.sh start
         sudo ./svc.sh status
-        # exit
-        sleep 500000000000
+        exit
+        sleep 3600
       shell: bash
