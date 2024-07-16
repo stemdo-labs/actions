@@ -16,6 +16,10 @@ inputs:
   password:
     description: 'Docker registry password'
     required: true
+  context:
+    description: 'Build context for Docker image'
+    required: false
+    default: '.'
   
 runs:
   using: 'composite'
@@ -25,8 +29,8 @@ runs:
 
     - name: Build and Push Docker Image
       run: |
-        echo "Building Docker image ${{ inputs.repository }}:${{ inputs.tag }}"
-        docker build -t ${{ inputs.repository }}:${{ inputs.tag }} .
+        echo "Building Docker image ${{ inputs.repository }}:${{ inputs.tag }} with context ${{ inputs.context }}"
+        docker build -t ${{ inputs.repository }}:${{ inputs.tag }} ${{ inputs.context }}
         docker tag ${{ inputs.repository }}:${{ inputs.tag }} ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
         echo "${{ inputs.password }}" | docker login ${{ inputs.registry_url }} -u ${{ inputs.username }} --password-stdin
         docker push ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
