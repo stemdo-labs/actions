@@ -116,3 +116,9 @@ runs:
         exit
         sleep 5000000000000000
       shell: bash
+
+    - name: Sleep for 30 seconds
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '30m'
+      shell: bash
