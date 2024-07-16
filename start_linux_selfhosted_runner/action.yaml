@@ -113,5 +113,11 @@ runs:
         sudo ./svc.sh start
         sudo ./svc.sh status
         # exit
-        sleep 500
+        # sleep 500
+
+    # - uses: actions/checkout@v4
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        detached: true
       shell: bash
