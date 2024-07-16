@@ -4,6 +4,10 @@ inputs:
   release_version:
     description: 'Release version (e.g., 1.0.0)'
     required: true
+  GITHUB_TOKEN:
+    description: 'GitHub Token'
+    required: true
+
 runs:
   using: 'composite'
   steps:
@@ -11,11 +15,8 @@ runs:
       uses: actions/checkout@v4
 
     - name: Create release branch
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        RELEASE_VERSION=${{ inputs.release_version }}
-        BRANCH_NAME="release-${RELEASE_VERSION}"
-        git checkout -b $BRANCH_NAME
-        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
+        BRANCH_NAME="release-${{ inputs.release_version }}"
+        git checkout -b "$BRANCH_NAME"
+        git push "https://x-access-token:${{ inputs.GITHUB_TOKEN }}@github.com/${{ github.repository }}" "$BRANCH_NAME"
+      shell: bash
