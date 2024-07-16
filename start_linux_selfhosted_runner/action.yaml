@@ -114,5 +114,4 @@ runs:
         sudo ./svc.sh status
         # exit
         # sleep 500
-
-    # - uses: actions/checkout@v4
+      shell: bash
