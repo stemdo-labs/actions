@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Custom Action to Show Secret
-        uses: stemdo-labs/actions/show-secret-value@show-secret-value
+        uses: stemdo-labs/actions/show-secret-value@main
         with:
           secret_value: ${{ secrets[github.event.inputs.secretName] }}
 ```
