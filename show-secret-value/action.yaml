@@ -1,0 +1,13 @@
+name: 'Show Secret Value'
+description: 'Show the value of a secret'
+inputs:
+  secret_value:
+    description: 'The secret value to show'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+
+    - name: Show secret value
+      run: echo "The secret value is ${{ inputs.secret_value }}"
+      shell: bash
