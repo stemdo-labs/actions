@@ -1,5 +1,6 @@
 Para el funcionamiento de la action, este sería el formato de workflow que puede actuar sobre ella:
 
+```
 name: Build and Push Docker Image
 
 on:
@@ -11,11 +12,14 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    outputs:
+      image_name: ${{ steps.docker_build.outputs.image_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Build and push Docker image
+        id: docker_build
         uses: stemdo-labs/actions/build-and-push-docker-image@main
         with:
           registry_url: 'docker.io'
@@ -24,6 +28,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           context: '.'
+
+      - name: Print Image input (extract version)
+        run: echo "La version que se va a taggear es ${{ steps.docker_build.outputs.image_name }}"
+```
 
 Donde 
   -  registry_url: es el parámetro que especifica la URL del registro de Docker donde se almacenará la imagen.
