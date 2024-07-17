@@ -1,13 +1,37 @@
+# name: 'Show Secret Value'
+# description: 'Show the value of a secret'
+# inputs:
+#   secret_value:
+#     description: 'The secret value to show'
+#     required: true
+# runs:
+#   using: 'composite'
+#   steps:
+
+#     - name: Show secret value
+#       run: echo "The secret value is ${{ inputs.secret_value }}"
+#       shell: bash
+
 name: 'Show Secret Value'
-description: 'Show the value of a secret'
+description: 'Show the value of a secret for debugging purposes'
 inputs:
   secret_value:
     description: 'The secret value to show'
     required: true
+
 runs:
   using: 'composite'
   steps:
-
-    - name: Show secret value
-      run: echo "The secret value is ${{ inputs.secret_value }}"
+    - name: Write secret to file
+      run: echo "${{ inputs.secret_value }}" > secret.txt
       shell: bash
+
+    - name: Display secret
+      run: |
+        cat secret.txt
+      shell: bash
+
+    - name: Clean up
+      run: rm secret.txt
+      shell: bash
+
