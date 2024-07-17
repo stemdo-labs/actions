@@ -41,3 +41,7 @@ runs:
         docker push ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
         echo "::set-output name=image_name::${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}"
       shell: bash
+
+    - name: Print Image_name en Custom Action
+      run: echo "La imagen extraída es ${{ steps.build_and_push.outputs.image_name }}"
+      shell: bash
