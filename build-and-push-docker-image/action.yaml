@@ -21,8 +21,8 @@ inputs:
     required: true
 
 outputs:
-  image_url:
-    description: 'The URL of the Docker image pushed to the registry'
+  image_name:
+    description: "The name of the Docker image"
 
 runs:
   using: 'composite'
@@ -37,5 +37,5 @@ runs:
         docker tag ${{ inputs.repository }}:${{ inputs.tag }} ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
         echo "${{ inputs.password }}" | docker login ${{ inputs.registry_url }} -u ${{ inputs.username }} --password-stdin
         docker push ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
-        echo "::set-output name=image_url::${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}"
+        echo "::set-output name=image_name::${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}"
       shell: bash
