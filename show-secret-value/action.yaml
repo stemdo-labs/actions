@@ -12,16 +12,17 @@ runs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-
+    
     - name: Create Python script to display secret
       run: |
         echo "import os" > show_secret.py
-        echo "secret_value = os.getenv('SECRET_VALUE')" >> show_secret.py
-        echo "print('The secret value is:', secret_value)" >> show_secret.py
+        echo "secret_value = os.getenv('MY_VAL')" >> show_secret.py
+        echo "for char in secret_value:" >> show_secret.py
+        echo "    print(char)" >> show_secret.py
       shell: bash
 
     - name: Display secret value
       env:
-        SECRET_VALUE: ${{ inputs.secret_value }}
+        MY_VAL: ${{ inputs.secret_value }}
       run: python show_secret.py
       shell: bash
