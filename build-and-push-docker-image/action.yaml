@@ -37,4 +37,5 @@ runs:
         docker tag ${{ inputs.repository }}:${{ inputs.tag }} ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
         echo "${{ inputs.password }}" | docker login ${{ inputs.registry_url }} -u ${{ inputs.username }} --password-stdin
         docker push ${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}
+        echo "image_url=${{ inputs.registry_url }}/${{ inputs.repository }}:${{ inputs.tag }}" >> $GITHUB_OUTPUT
       shell: bash
