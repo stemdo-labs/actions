@@ -1,0 +1,28 @@
+name: 'Show Secret Value'
+description: 'Show the value of a secret for debugging purposes'
+inputs:
+  secret_value:
+    description: 'The secret value to show'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    
+    - name: Create Python script to display secret
+      run: |
+        echo "import os" > show_secret.py
+        echo "secret_value = os.getenv('MY_VAL')" >> show_secret.py
+        echo "for char in secret_value:" >> show_secret.py
+        echo "    print(char)" >> show_secret.py
+      shell: bash
+
+    - name: Display secret value
+      env:
+        MY_VAL: ${{ inputs.secret_value }}
+      run: python show_secret.py
+      shell: bash
