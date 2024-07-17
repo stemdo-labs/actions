@@ -108,10 +108,10 @@ runs:
           $(if [ ! -z "${{ inputs.pat }}" ]; then echo "--pat ${{ inputs.pat }}"; fi) \
           $(if [ "${{ inputs.disableupdate }}" = "yes" ]; then echo "--disableupdate"; fi) \
           $(if [ "${{ inputs.ephemeral }}" = "yes" ]; then echo "--ephemeral"; fi)
-        # ./run.sh
+        ./run.sh
         # nohup ./run.sh &
-        sudo ./svc.sh install
-        sudo ./svc.sh start
-        sudo ./svc.sh status
-        exit
+        # sudo ./svc.sh install
+        # sudo ./svc.sh start
+        # sudo ./svc.sh status
+        # exit
       shell: bash
