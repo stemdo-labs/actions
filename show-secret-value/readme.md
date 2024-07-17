@@ -2,7 +2,7 @@ Para utilizar esta custom action, tienes que intrdocuri un secreto previamente c
 El workflow desde donde se lanza es similar a este:
 
 
-´´´
+```
 name: Use Secret Action
 
 on:
@@ -23,4 +23,4 @@ jobs:
         uses: stemdo-labs/actions/show-secret-value@show-secret-value
         with:
           secret_value: ${{ secrets[github.event.inputs.secretName] }}
-´´´
+```
