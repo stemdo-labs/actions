@@ -1,4 +1,4 @@
-Para utilizar esta custom action, tienes que intrdocuri un secreto previamente cuando lo vayas a ejecutar 
+Para utilizar esta custom action, tienes que intrdocuir un secreto previamente que es solicitado cuando lo vayas a ejecutar 
 El workflow desde donde se lanza es similar a este:
 
 
