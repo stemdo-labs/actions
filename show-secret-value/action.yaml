@@ -1,17 +1,3 @@
-# name: 'Show Secret Value'
-# description: 'Show the value of a secret'
-# inputs:
-#   secret_value:
-#     description: 'The secret value to show'
-#     required: true
-# runs:
-#   using: 'composite'
-#   steps:
-
-#     - name: Show secret value
-#       run: echo "The secret value is ${{ inputs.secret_value }}"
-#       shell: bash
-
 name: 'Show Secret Value'
 description: 'Show the value of a secret for debugging purposes'
 inputs:
@@ -22,16 +8,19 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Write secret to file
-      run: echo "${{ inputs.secret_value }}" > secret.txt
-      shell: bash
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-    - name: Display secret
+    - name: Create Python script to display secret
       run: |
-        cat secret.txt
-      shell: bash
+        echo "import os" > show_secret.py
+        echo "secret_value = os.getenv('SECRET_VALUE')" >> show_secret.py
+        echo "print('The secret value is:', secret_value)" >> show_secret.py
 
-    - name: Clean up
-      run: rm secret.txt
-      shell: bash
+    - name: Display secret value
+      env:
+        SECRET_VALUE: ${{ inputs.secret_value }}
+      run: python show_secret.py
 
