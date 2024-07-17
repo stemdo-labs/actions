@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build and push Docker image
-        uses: stemdo-labs/actions/build-and-push-docker-image@develop-push-image
+        uses: stemdo-labs/actions/build-and-push-docker-image@main
         with:
           registry_url: 'docker.io'
           repository: 'ploopez/prueba'
