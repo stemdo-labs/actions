@@ -20,6 +20,10 @@ inputs:
     description: 'Build context (path to Dockerfile)'
     required: true
 
+outputs:
+  image_url:
+    description: 'The URL of the Docker image pushed to the registry'
+
 runs:
   using: 'composite'
   steps:
