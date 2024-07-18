@@ -1,82 +1,12 @@
 name: 'Semantic Versioning'
-description: 'Update version number in composer.json and create a new Git tag'
+description: 'A GitHub Action for Semantic Versioning'
 inputs:
-  file_path:
-    description: 'Path to the file containing the version'
+  release_type:
+    description: 'The type of release: major, minor, patch'
     required: true
-  increment_type:
-    description: 'Type of version increment (major, minor, patch)'
-    required: true
-    default: 'patch'
-
+outputs:
+  new_version:
+    description: 'The new version number'
 runs:
-  using: 'composite'
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: |
-        pip install semantic-version
-      shell: bash
-
-    - name: Update version and tag
-      run: |
-        file_path="${{ inputs.file_path }}"
-        increment_type="${{ inputs.increment_type }}"
-
-        read_version() {
-          python -c "import json; data = json.load(open('$file_path')); print(data['version'])"
-        }
-
-        write_version() {
-          new_version=$1
-          python -c "import json; data = json.load(open('$file_path')); data['version'] = '$new_version'; json.dump(data, open('$file_path', 'w'), indent=4)"
-        }
-
-        increment_version() {
-          current_version=$1
-          increment_type=$2
-          import sys
-          python -c "
-          import sys
-          from semantic_version import Version
-          current_version = Version('$current_version')
-
-          if '$increment_type' == 'major':
-              new_version = current_version.next_major()
-          elif '$increment_type' == 'minor':
-              new_version = current_version.next_minor()
-          elif '$increment_type' == 'patch':
-              new_version = current_version.next_patch()
-          else:
-              print('Invalid increment type', file=sys.stderr)
-              sys.exit(1)
-
-          print(new_version)
-          "
-        }
-
-        current_version=$(read_version)
-        new_version=$(increment_version "$current_version" "$increment_type")
-
-        echo "Current version: $current_version"
-        echo "Current version: $current_version"
-        echo "New version: $new_version"
-
-        write_version "$new_version"
-
-        git config --global:
-          user.email: "github-actions[bot]@users.noreply.github.com"
-
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        git tag "v$new_version"
-        git push origin "v$new_version"
-
-      shell: bash
+  using: 'node12'
+  main: 'index.js'
