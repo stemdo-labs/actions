@@ -1,12 +1,17 @@
-name: 'Semantic Versioning'
-description: 'A GitHub Action for Semantic Versioning'
+name: 'Version Updater'
+description: 'Update the version in a specified file based on the type of version bump'
 inputs:
-  release_type:
-    description: 'The type of release: major, minor, patch'
+  file:
+    description: 'Path to the file containing the version'
     required: true
-outputs:
-  new_version:
-    description: 'The new version number'
+  version-key:
+    description: 'The key or pattern to identify the version in the file'
+    required: true
+    default: 'version'
+  bump-type:
+    description: 'The type of version bump: major, minor, or patch'
+    required: true
+    default: 'patch'
 runs:
   using: 'node12'
   main: 'index.js'
