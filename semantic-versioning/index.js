@@ -1,45 +1,47 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
-const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-try {
-  const releaseType = core.getInput('release_type');
-  
-  // Fetch tags from the repository
-  execSync('git fetch --tags');
-  
-  // Get the latest tag
-  const latestTag = execSync('git describe --tags `git rev-list --tags --max-count=1`').toString().trim();
-  console.log(`Latest tag: ${latestTag}`);
-  
-  // Parse the version number
-  const versionParts = latestTag.replace('v', '').split('.');
-  let major = parseInt(versionParts[0]);
-  let minor = parseInt(versionParts[1]);
-  let patch = parseInt(versionParts[2]);
-
-  // Increment the version based on release type
-  if (releaseType === 'major') {
-    major += 1;
-    minor = 0;
-    patch = 0;
-  } else if (releaseType === 'minor') {
-    minor += 1;
-    patch = 0;
-  } else if (releaseType === 'patch') {
-    patch += 1;
-  } else {
-    throw new Error('Invalid release type');
+// Helper function to increment version
+function incrementVersion(version, bumpType) {
+  const [major, minor, patch] = version.split('.').map(Number);
+  switch (bumpType) {
+    case 'major':
+      return `${major + 1}.0.0`;
+    case 'minor':
+      return `${major}.${minor + 1}.0`;
+    case 'patch':
+      return `${major}.${minor}.${patch + 1}`;
+    default:
+      throw new Error(`Invalid bump type: ${bumpType}`);
   }
-
-  const newVersion = `v${major}.${minor}.${patch}`;
-  console.log(`New version: ${newVersion}`);
-  
-  // Create a new tag
-  execSync(`git tag ${newVersion}`);
-  execSync(`git push origin ${newVersion}`);
-
-  core.setOutput('new_version', newVersion);
-} catch (error) {
-  core.setFailed(error.message);
 }
+
+async function run() {
+  try {
+    const filePath = core.getInput('file');
+    const versionKey = core.getInput('version-key');
+    const bumpType = core.getInput('bump-type');
+    
+    const absolutePath = path.resolve(filePath);
+    const data = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+    
+    // Find the version in the file
+    if (!(versionKey in data)) {
+      throw new Error(`Version key ${versionKey} not found in file`);
+    }
+
+    const oldVersion = data[versionKey];
+    const newVersion = incrementVersion(oldVersion, bumpType);
+    
+    // Update the version
+    data[versionKey] = newVersion;
+    fs.writeFileSync(absolutePath, JSON.stringify(data, null, 2), 'utf8');
+    
+    console.log(`Version updated from ${oldVersion} to ${newVersion}`);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+}
+
+run();
