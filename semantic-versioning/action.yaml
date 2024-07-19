@@ -37,3 +37,4 @@ runs:
 
     - name: Print Version
       run: echo "The current version is ${{ env.VERSION }}"
+      shell: bash
