@@ -8,10 +8,29 @@ inputs:
     description: 'The key or pattern to identify the version in the file'
     required: true
     default: 'version'
-  bump-type:
-    description: 'The type of version bump: major, minor, or patch'
-    required: true
-    default: 'patch'
+  #bump-type:
+  #  description: 'The type of version bump: major, minor, or patch'
+  #  required: true
+  #  default: 'patch'
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Get Version
+      id: get_version
+      run: |
+          FILE_PATH="${{ inputs.file }}"
+          VERSION_KEY="${{ inputs.version-key }}"
+          
+          sudo apt-get update && sudo apt-get install -y jq
+          VERSION=$(jq -r ".${VERSION_KEY}" "$FILE_PATH")
+          if [ -z "$VERSION" ]; then
+            echo "No se pudo obtener la versión desde $FILE_PATH con la clave $VERSION_KEY"
+            exit 1
+          fi
+        
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "::set-output name=version::${VERSION}"
+      shell: bash
