@@ -8,10 +8,10 @@ inputs:
     description: 'The key or pattern to identify the version in the file'
     required: true
     default: 'version'
-  #bump-type:
-  #  description: 'The type of version bump: major, minor, or patch'
-  #  required: true
-  #  default: 'patch'
+  bump-type:
+    description: 'The type of version bump: major, minor, or patch'
+    required: true
+    default: 'patch'
 runs:
   using: 'composite'
   steps:
