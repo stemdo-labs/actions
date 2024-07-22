@@ -33,15 +33,19 @@ runs:
           FILE_PATH="${{ inputs.file }}"
           VERSION_KEY="${{ inputs.version-key }}"
           
-          sudo apt-get update && sudo apt-get install -y jq
+          
 
           if [[ "$FILE_PATH" == *.json ]]; then
+            sudo apt-get update && sudo apt-get install -y jq
             VERSION=$(jq -r ".${VERSION_KEY}" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.yml ]] || [[ "$FILE_PATH" == *.yaml ]]; then
+            sudo apt-get update && sudo apt-get install -y yq
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
+            sudo apt-get update && sudo apt-get install -y xmlstarlet
             VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.py ]]; then
+            apt-get update && apt-get install -y python3
             VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
           else
             echo "Unsupported file format. Only JSON, YAML, XML, and Python files are supported"
