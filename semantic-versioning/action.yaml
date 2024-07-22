@@ -46,9 +46,8 @@ runs:
             sudo apt-get update && sudo apt-get install -y yq
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
-            VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\$0" --non-recursive exec:exec -Dexec.executable="cat" -Dexec.args="$FILE_PATH" | xmllint --xpath "string(//$VERSION_KEY)" -
-            
-
+            sudo apt-get update && sudo apt-get install -y xmllint
+            VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\$0" --non-recursive exec:exec -Dexec.executable="cat" -Dexec.args="$FILE_PATH" | xmllint --xpath "string(//$VERSION_KEY)" -)            
           elif [[ "$FILE_PATH" == *.py ]]; then
             apt-get update && apt-get install -y python3
             VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
