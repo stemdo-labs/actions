@@ -27,14 +27,18 @@ runs:
         git config --global user.name "github-actions[bot]"
       shell: bash
 
+    - name: List Files
+      run: |
+        ls -l "${{ inputs.file }}"
+        file -b "${{ inputs.file }}"
+      shell: bash
+
     - name: Get Version
       id: get_version
       run: |
           FILE_PATH="${{ inputs.file }}"
           VERSION_KEY="${{ inputs.version-key }}"
           
-          
-
           if [[ "$FILE_PATH" == *.json ]]; then
             sudo apt-get update && sudo apt-get install -y jq
             VERSION=$(jq -r ".${VERSION_KEY}" "$FILE_PATH")
@@ -42,8 +46,10 @@ runs:
             sudo apt-get update && sudo apt-get install -y yq
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
-            sudo apt-get update && sudo apt-get install -y xmlstarlet
-            VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
+            if [[ ".$VERSION_KEY" == "version" ]]; then
+              sudo apt-get update && sudo apt-get install -y xmlstarlet
+              VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
+            fi
           elif [[ "$FILE_PATH" == *.py ]]; then
             apt-get update && apt-get install -y python3
             VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
@@ -117,11 +123,12 @@ runs:
           yq eval ".${version_key} = \"$new_version\"" "${{ inputs.file }}" > temp.yml
           mv temp.yml "${{ inputs.file }}"
         elif [[ "${{ inputs.file }}" == *.xml ]]; then
-          xmlstarlet ed -L -u "/${version_key}" -v "$new_version" "${{ inputs.file }}"
+          xmlstarlet ed -L -u "${version_key}" -v "$new_version" "${{ inputs.file }}"
         elif [[ "${{ inputs.file }}" == *.py ]]; then
           sed -i "s/\(['\"]$version_key['\"]\s*:\s*['\"]\)[^'\"]\+/\1$new_version/" "${{ inputs.file }}"
         else
           echo "Unsupported file format. Only JSON, YAML, XML, and Python files are supported"
+          exit 1
         fi
 
         git add "${{ inputs.file }}"
