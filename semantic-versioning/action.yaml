@@ -46,10 +46,14 @@ runs:
             sudo apt-get update && sudo apt-get install -y yq
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
-            if [[ ".$VERSION_KEY" == "version" ]]; then
-              sudo apt-get update && sudo apt-get install -y xmlstarlet
-              VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
-            fi
+              #sudo apt-get update && sudo apt-get install -y xmlstarlet
+              #VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
+              VERSION=$(awk -v key="$VERSION_KEY" -F'[<>]' -v OFS='' '
+                BEGIN { key_found = 0 }
+                $1 == key { key_found = 1 }
+                key_found && /<\/[^>]*>/ { print $3; exit }
+              ' "$FILE_PATH")
+
           elif [[ "$FILE_PATH" == *.py ]]; then
             apt-get update && apt-get install -y python3
             VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
@@ -123,7 +127,7 @@ runs:
           yq eval ".${version_key} = \"$new_version\"" "${{ inputs.file }}" > temp.yml
           mv temp.yml "${{ inputs.file }}"
         elif [[ "${{ inputs.file }}" == *.xml ]]; then
-          xmlstarlet ed -L -u "${version_key}" -v "$new_version" "${{ inputs.file }}"
+          sed -i "s|<${version_key}>[^<]*</${version_key}>|<${version_key}>$new_version</${version_key}>|" "$FILE_PATH"
         elif [[ "${{ inputs.file }}" == *.py ]]; then
           sed -i "s/\(['\"]$version_key['\"]\s*:\s*['\"]\)[^'\"]\+/\1$new_version/" "${{ inputs.file }}"
         else
