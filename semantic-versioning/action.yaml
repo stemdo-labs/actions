@@ -34,7 +34,19 @@ runs:
           VERSION_KEY="${{ inputs.version-key }}"
           
           sudo apt-get update && sudo apt-get install -y jq
-          VERSION=$(jq -r ".${VERSION_KEY}" "$FILE_PATH")
+
+          if [[ "$FILE_PATH" == *.json ]]; then
+            VERSION=$(jq -r ".${VERSION_KEY}" "$FILE_PATH")
+          elif [[ "$FILE_PATH" == *.yml ]] || [[ "$FILE_PATH" == *.yaml ]]; then
+            VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
+          elif [[ "$FILE_PATH" == *.xml ]]; then
+            VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
+          elif [[ "$FILE_PATH" == *.py ]]; then
+            VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
+          else
+            echo "Unsupported file format. Only JSON, YAML, XML, and Python files are supported"
+          fi
+          
           if [ -z "$VERSION" ]; then
             echo "No se pudo obtener la versión desde $FILE_PATH con la clave $VERSION_KEY"
             exit 1
@@ -93,8 +105,21 @@ runs:
         version_key="${{ inputs.version-key }}"
         new_version="${{ env.NEW_VERSION }}"
         echo "Updating version from ${{ inputs.version-key }} to $new_version in ${{ inputs.file }}"
-        jq ".$version_key = \"$new_version\"" "${{ inputs.file }}" > temp.json
-        mv temp.json "${{ inputs.file }}"
+
+        if [[ "${{ inputs.file }}" == *.json ]]; then
+          jq ".$version_key = \"$new_version\"" "${{ inputs.file }}" > temp.json
+          mv temp.json "${{ inputs.file }}"
+        elif [[ "${{ inputs.file }}" == *.yml ]] || [[ "${{ inputs.file }}" == *.yaml ]]; then
+          yq eval ".${version_key} = \"$new_version\"" "${{ inputs.file }}" > temp.yml
+          mv temp.yml "${{ inputs.file }}"
+        elif [[ "${{ inputs.file }}" == *.xml ]]; then
+          xmlstarlet ed -L -u "/${version_key}" -v "$new_version" "${{ inputs.file }}"
+        elif [[ "${{ inputs.file }}" == *.py ]]; then
+          sed -i "s/\(['\"]$version_key['\"]\s*:\s*['\"]\)[^'\"]\+/\1$new_version/" "${{ inputs.file }}"
+        else
+          echo "Unsupported file format. Only JSON, YAML, XML, and Python files are supported"
+        fi
+
         git add "${{ inputs.file }}"
         git commit -m "chore: bump version to $new_version"
         git pull origin ${{ github.ref }}
