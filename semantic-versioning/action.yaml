@@ -46,13 +46,8 @@ runs:
             sudo apt-get update && sudo apt-get install -y yq
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
-              #sudo apt-get update && sudo apt-get install -y xmlstarlet
-              #VERSION=$(xmlstarlet sel -t -v "/${VERSION_KEY}" "$FILE_PATH")
-              VERSION=$(awk -v key="$VERSION_KEY" -F'[<>]' -v OFS='' '
-                BEGIN { key_found = 0 }
-                $1 == key { key_found = 1 }
-                key_found && /<\/[^>]*>/ { print $3; exit }
-              ' "$FILE_PATH")
+            VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\$0" --non-recursive exec:exec -Dexec.executable="cat" -Dexec.args="$FILE_PATH" | xmllint --xpath "string(//$VERSION_KEY)" -
+            
 
           elif [[ "$FILE_PATH" == *.py ]]; then
             apt-get update && apt-get install -y python3
