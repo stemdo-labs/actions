@@ -1,5 +1,7 @@
 name: 'Version Updater'
 description: 'Update the version in a specified file based on the type of version bump'
+
+
 inputs:
   file:
     description: 'Path to the file containing the version'
@@ -14,6 +16,7 @@ inputs:
     default: 'patch'
 runs:
   using: 'composite'
+
   steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -77,4 +80,19 @@ runs:
     
     - name: Print New Version
       run: echo "The new version is ${{ env.NEW_VERSION }}"
+      shell: bash
+
+    - name: Update Version
+      run: |
+        version_key="${{ inputs.version-key }}"
+        new_version="${{ env.NEW_VERSION }}"
+        echo "Updating version from ${{ inputs.version-key }} to $new_version in ${{ inputs.file }}"
+        jq ".$version_key = \"$new_version\"" "${{ inputs.file }}" > temp.json
+        mv temp.json "${{ inputs.file }}"
+        git add "${{ inputs.file }}"
+        git commit -m "chore: bump version to $new_version"
+        git pull origin ${{ github.ref }}
+        git push origin ${{ github.ref }}
+        echo "Version updated successfully"
+        
       shell: bash
