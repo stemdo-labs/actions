@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update version
-        uses: stemdo-labs/actions/semantic-versioning@develop-versioning
+        uses: stemdo-labs/actions/semantic-versioning@main
         with:
           file: ${{ github.event.inputs.file }}
           version-key: ${{ github.event.inputs.version-key }}
