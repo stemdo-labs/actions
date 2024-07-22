@@ -47,7 +47,7 @@ runs:
             VERSION=$(yq eval ".$VERSION_KEY" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.xml ]]; then
             sudo apt-get update && sudo apt-get install -y libxml2-utils
-            VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args="\$0" --non-recursive exec:exec -Dexec.executable="cat" -Dexec.args="$FILE_PATH" | xmllint --xpath "string(//$VERSION_KEY)" -)            
+            VERSION=$(xmllint --xpath "string(/project/version)" "$FILE_PATH")
           elif [[ "$FILE_PATH" == *.py ]]; then
             apt-get update && apt-get install -y python3
             VERSION=$(grep -oP "['\"]$VERSION_KEY['\"]\s*:\s*['\"]\K[^'\"]+" "$FILE_PATH")
